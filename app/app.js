@@ -3,7 +3,11 @@ const app = express();
 const mysql = require('mysql2')
 const path = require('path');
 const bodyParser = require('body-parser');
+const session = require('express-session')
+const MySQLStore = require('express-mysql-session')(session);
 
+//DBとsession
+//DBの設定
 const connection = mysql.createConnection({
     host: 'localhost',
     user: 'do',
@@ -11,21 +15,56 @@ const connection = mysql.createConnection({
     database: 'cdur'
   });
 
+//storeを設定し、DBと結びつける
+const sessionStore = new MySQLStore(connection);
+
+//セッションの設定
+const session_opt = {
+    secret: 'adropofgoldensun',
+    resave: false,
+    store: sessionStore,
+    saveUninitialized: false,
+    cookie: {maxAge: 60 * 60 * 1000}
+};
+
 //DBに接続
 connection.connect((err) => {
-    if (err) {
-      console.log('error connecting: ' + err.stack);
-      return
-    };
-    console.log('connection success!');
+  if (err) {
+    console.log('error connecting: ' + err.stack);
+    return
+  };
+  console.log('connection success!');
 });
 
-//リクエストのbodyをパースする設定
+
+//ミドルウェアを起動
+//リクエストのbodyをパースする
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-//publicディレクトリを静的ファイル(HTML等)のルートディレクトリとして設定
+//publicディレクトリを静的ファイル(HTML等)のルートディレクトリとする
 app.use(express.static(path.join(__dirname, 'public')));
+
+//セッション開始
+app.use(session(session_opt))
+
+//未ログイン者をはじいてログインページに飛ばす
+app.use((req, res, next) => {
+    if (req.session.name) {
+
+    } else {
+      res.json(results)
+    }
+  });
+
+//ログイン処理
+app.get('/api/v1/login/:name', (req, res) => {
+  //connect database
+  const name = req.params.name;
+  connection.query(`SELECT * FROM voter WHERE id = ${name}`, (error, results) => {
+      res.json(results)
+  });
+});
 
 //get all voters
 app.get('/api/v1/voters', (req, res) => {

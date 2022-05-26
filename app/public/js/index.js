@@ -3,10 +3,18 @@ const indexModule = (() => {
 
     switch (path) {
         case "/" :
+            document.getElementById("login-btn").addEventListener('click', () => {
+                return loginModule.login();
+            });
+
+            break;
+
+        case "/vote.html" :
             document.getElementById('search-btn').addEventListener('click', () => {
                 return searchModule.searchVoters();
             });
 
+            //returnして終わっているので、breakしなくていい。
             return votersModule.fetchAllVoters();
         
         case "/create.html" : 
@@ -17,6 +25,7 @@ const indexModule = (() => {
             document.getElementById('cancel-btn').addEventListener('click', () => {
                 return window.location.href = '/';
             });
+
             break;
 
         case "/edit.html" :
@@ -31,7 +40,10 @@ const indexModule = (() => {
             });
 
             document.getElementById('delete-btn').addEventListener('click', () => {
-                return votersModule.deleteVoter(uid);
+                return (() => {
+                    votersModule.deleteVoter(uid);
+                    window.location.href = "/";
+                });
             });
             
             return votersModule.setExistingValue(uid);
