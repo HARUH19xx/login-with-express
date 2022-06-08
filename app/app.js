@@ -24,7 +24,9 @@ const session_opt = {
     resave: false,
     store: sessionStore,
     saveUninitialized: false,
-    cookie: {maxAge: 60 * 60 * 1000}
+    cookie: {
+      maxAge: 60*60*1000
+    }
 };
 
 //DBに接続
@@ -47,15 +49,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //セッション開始
 app.use(session(session_opt))
-
-//未ログイン者をはじいてログインページに飛ばす
-app.use((req, res, next) => {
-    if (req.session.name) {
-
-    } else {
-      res.json(results)
-    }
-  });
 
 //ログイン処理
 app.get('/api/v1/login/:name', (req, res) => {

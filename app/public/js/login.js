@@ -40,11 +40,11 @@ const loginModule = (() => {
         }
     }
 
-    const name = document.getElementById("name").value
-
     return {
         //メソッドを設定。
         login: async () => {
+            const name = document.getElementById("name").value
+
             //fetchでurlをgetしてくる。この実行結果をawaitで待つ。
             const res = await fetch(BASE_URL + "/" + name);
             //json形式のresをパースし、オブジェクトにしてusersという変数に入れる。
@@ -54,7 +54,7 @@ const loginModule = (() => {
             for (let i = 0; i < voters.length; i++) {
                 const user = users[i];
                 if (name === user.name) {
-                    window.location.href = "/voters"
+                    window.location.href = "/voters.html"
                 } else {
                     window.alert('ユーザー名がありません。')
                 }
@@ -62,21 +62,21 @@ const loginModule = (() => {
             return handleError(res);
         },
 
-        loginCheck: async () => {
-            //fetchでurlをgetしてくる。この実行結果をawaitで待つ。
-            const res = await fetch(BASE_URL + "/" + name);
-            //json形式のresをパースし、オブジェクトにしてusersという変数に入れる。
-            const users = await res.json();
+        // loginCheck: async () => {
+        //     //fetchでurlをgetしてくる。この実行結果をawaitで待つ。
+        //     const res = await fetch(BASE_URL + "/" + name);
+        //     //json形式のresをパースし、オブジェクトにしてusersという変数に入れる。
+        //     const users = await res.json();
 
-            //配列であるusersに繰り返し処理を実行する
-            for (let i = 0; i < voters.length; i++) {
-                const user = users[i];
-                if (name === user.name) {
-                    window.location.href = "/voters"
-                } else {
-                    window.alert('もう一度ログインしてください。')
-                }
-            };
-        }
+        //     //配列であるusersに繰り返し処理を実行する
+        //     for (let i = 0; i < voters.length; i++) {
+        //         const user = users[i];
+        //         if (name !== user.name) {
+        //             window.location.href = "/",
+        //             window.alert('もう一度ログインしてください。')
+        //         };
+        //     };
+        // return handleError(res)
+        // }
     }
 })();
